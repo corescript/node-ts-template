@@ -1,0 +1,27 @@
+{
+    "SuccessResponse": {
+        "type": "SuccessResponse",
+        "status": 200,
+        "message": "Success."
+    },
+    "Unauthorized": {
+        "type": "Unauthorized",
+        "status": 401,
+        "message": "Unauthorized"
+    },
+    "Forbidden": {
+        "type": "Forbidden",
+        "status": 403,
+        "message": "Sorry, You don't have access to this resource."
+    },
+    "UnknownError": {
+        "type": "UnknownError",
+        "status": 500,
+        "message": "Something went wrong"
+    },
+    "ServerError": {
+        "type": "ServerError",
+        "status": 500,
+        "message": "Something went wrong"
+    }
+}
