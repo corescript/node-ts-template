@@ -4,6 +4,11 @@
         "status": 200,
         "message": "Success."
     },
+    "FailedResponse": {
+        "type": "FailedResponse",
+        "status": 400,
+        "message": "Success."
+    },
     "Unauthorized": {
         "type": "Unauthorized",
         "status": 401,
@@ -14,6 +19,16 @@
         "status": 403,
         "message": "Sorry, You don't have access to this resource."
     },
+    "NotFound": {
+        "type": "NotFound",
+        "status": 403,
+        "message": "Sorry, unable to find this resource."
+    },
+    "ValidationError": {
+        "type": "ValidationError",
+        "status": 422,
+        "message": "Sorry, invalid request data"
+    },
     "UnknownError": {
         "type": "UnknownError",
         "status": 500,
@@ -23,5 +38,25 @@
         "type": "ServerError",
         "status": 500,
         "message": "Something went wrong"
+    },
+    "InvalidId": {
+        "type": "InvalidId",
+        "status": 422,
+        "message": "Invalid Id"
+    },
+    "InvalidTime": {
+        "type": "InvalidTime",
+        "status": 422,
+        "message": "Invalid Time Log"
+    },
+    "InvalidValue": {
+        "type": "InvalidValue",
+        "status": 422,
+        "message": "Invalid Id"
+    },
+    "InvalidAuth": {
+        "type": "InvalidAuth",
+        "status": 422,
+        "message": "Invalid email or password"
     }
 }

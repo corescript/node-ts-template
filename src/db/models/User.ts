@@ -1,18 +1,29 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import mongoose_delete from 'mongoose-delete';
 
 const userSchema = new mongoose.Schema(
     {
-        firstName: {
+        name: {
             type: String,
             required: false,
             trim: true,
             text: true
         },
-        lastName: {
+        email: {
             type: String,
-            required: false,
-            text: true
+            required: true,
+            index: true
+        },
+        role: {
+            type: String,
+            default: 'USER',
+            enum: ['ADMIN', 'USER']
+        },
+        password: {
+            type: String
+        },
+        lastLoggedIn: {
+            type: Date
         }
     },
     { timestamps: { createdAt: 'createdDate', updatedAt: 'modifiedDate' } }

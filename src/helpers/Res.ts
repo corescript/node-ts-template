@@ -1,13 +1,13 @@
 import { Response } from 'express';
 import { ValidationErrorInterface } from 'utils/validator';
 interface ResOptions {
-    lang: string;
-    data: Record<string, unknown>;
-    meta: Record<string, unknown>;
+    lang?: string;
+    data?: Record<string, unknown>;
+    meta?: Record<string, unknown>;
     type: string;
-    error: Record<string, unknown>;
-    fieldErrors: ValidationErrorInterface[];
-    constants: Record<string, unknown>;
+    error?: Record<string, unknown>;
+    fieldErrors?: ValidationErrorInterface[];
+    constants?: Record<string, unknown>;
 }
 
 interface ErrConstant {
@@ -47,13 +47,13 @@ class Res {
 
         this.success = false;
 
-        this.data = options?.data || undefined;
+        this.data = options?.data || '';
 
-        this.meta = options?.meta || undefined;
+        this.meta = options?.meta || '';
 
         this.type = options?.type || 'UnknownError';
 
-        this.fieldErrors = options?.fieldErrors || undefined;
+        this.fieldErrors = options?.fieldErrors || [];
 
         this.constants = require(`data/lang/constants.${this.lang}.json`);
     }
