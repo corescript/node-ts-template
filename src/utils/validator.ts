@@ -1,15 +1,15 @@
 import * as expressValidator from 'express-validator';
 
 export interface ValidationErrorInterface {
-    param: string,
-    msg: string
+    param: string;
+    msg: string;
 }
 interface formatterOptions {
-    location: string,
-    msg: string,
-    param: string,
-    value: string,
-    nestedErrors: string
+    location: string;
+    msg: string;
+    param: string;
+    value: string;
+    nestedErrors: string;
 }
 
 const formatter = (options: formatterOptions): ValidationErrorInterface => {
@@ -19,8 +19,7 @@ const formatter = (options: formatterOptions): ValidationErrorInterface => {
     };
 };
 
-
-const defaultOptions: object = {
+const defaultOptions: any = {
     formatter
 };
 
@@ -31,4 +30,5 @@ export const body = expressValidator.body;
 export const param = expressValidator.param;
 export const query = expressValidator.query;
 
-export const validationResult = expressValidator.validationResult.withDefaults(defaultOptions);
+export const validationResult =
+    expressValidator.validationResult.withDefaults(defaultOptions);

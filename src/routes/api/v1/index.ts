@@ -1,14 +1,14 @@
 import express, { Request, Response } from 'express';
-var router = express.Router();
+const router = express.Router();
 
 import authRouter from './auth';
 import userRouter from './user';
 
 /* GET home page. */
 
-router.all('/auth', authRouter);
+router.use('/auth', authRouter);
 
-router.all('/user', userRouter);
+router.use('/user', userRouter);
 
 router.get('/', function (req: Request, res: Response) {
     res.send({ title: 'Express' });

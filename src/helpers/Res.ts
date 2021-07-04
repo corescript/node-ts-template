@@ -1,49 +1,46 @@
 import { Response } from 'express';
-import { ValidationErrorInterface } from 'utils/validator'
+import { ValidationErrorInterface } from 'utils/validator';
 interface ResOptions {
-    lang: string,
-    data: object,
-    meta: object,
-    type: string
-    error: object,
-    fieldErrors: ValidationErrorInterface[],
-    constants: object
+    lang: string;
+    data: Record<string, unknown>;
+    meta: Record<string, unknown>;
+    type: string;
+    error: Record<string, unknown>;
+    fieldErrors: ValidationErrorInterface[];
+    constants: Record<string, unknown>;
 }
 
 interface ErrConstant {
-    status?: number,
-    message: string,
-    type: string
+    status?: number;
+    message: string;
+    type: string;
 }
 interface ErrConstants {
-    [key: string]: ErrConstant
+    [key: string]: ErrConstant;
 }
 
 interface ResBody {
-    success?: boolean,
-    status?: number,
-    data?: object,
-    message?: string,
-    meta?: object,
-    errors?: object
+    success?: boolean;
+    status?: number;
+    data?: Record<string, unknown>;
+    message?: string;
+    meta?: Record<string, unknown>;
+    errors?: Record<string, unknown>;
 }
 
 class Res {
-
     public res;
-    public lang: string = 'en';
-    public data: object = {};
-    public meta: object = {};
-    public type: string = 'UnknownError';
-    public error: object = {}
+    public lang = 'en';
+    public data = {};
+    public meta = {};
+    public type = 'UnknownError';
+    public error = {};
     public fieldErrors: ValidationErrorInterface[] = [];
 
     private constants: ErrConstants = {};
-    private success: boolean = false;
-
+    private success = false;
 
     constructor(res: Response, options: ResOptions) {
-
         this.res = res;
 
         this.lang = options?.lang || 'en';
@@ -59,33 +56,35 @@ class Res {
         this.fieldErrors = options?.fieldErrors || undefined;
 
         this.constants = require(`data/lang/constants.${this.lang}.json`);
-
     }
 
     getMessageDetails(type: keyof ErrConstants): ErrConstant {
-
-        return this.constants[type] || this.constants['UnknownError' as keyof object];
-
+        return (
+            this.constants[type] ||
+            this.constants['UnknownError' as keyof ErrConstants]
+        );
     }
 
-    populateFieldErrors(errors: ValidationErrorInterface[]): object {
-
-        return errors.reduce((acc: { [key: string]: string[] }, error: ValidationErrorInterface): object => {
-            let message = this.constants[error.msg]?.message || error.msg;
-            if (acc[error.param]) {
-                acc[error.param] = [...acc[error.param], message];
+    populateFieldErrors(
+        errors: ValidationErrorInterface[]
+    ): Record<string, unknown> {
+        return errors.reduce(
+            (acc, error: ValidationErrorInterface): Record<string, unknown> => {
+                const message = this.constants[error.msg]?.message || error.msg;
+                if (acc[error.param]) {
+                    acc[error.param] = [...acc[error.param], message];
+                    return acc;
+                }
+                acc = { ...acc, [error.param]: [message] };
                 return acc;
-            }
-            acc = { ...acc, [error.param]: [message] };
-            return acc;
-        }, {});
-
+            },
+            {} as Record<string, any>
+        );
     }
 
-    send() {
-
-        let resBody: ResBody = {
-            status: 400,
+    send(): void {
+        const resBody: ResBody = {
+            status: 400
         };
 
         let metaData: ErrConstant | undefined;
@@ -95,24 +94,18 @@ class Res {
         }
 
         if (metaData) {
-
-            let { status } = metaData;
+            const { status } = metaData;
             resBody.status = status;
-
         } else {
-
-            let { type, message, status }: ErrConstant = this.getMessageDetails(
-                'UnknownError'
-            );
+            const { type, message, status }: ErrConstant =
+                this.getMessageDetails('UnknownError');
 
             resBody.status = status;
 
             metaData = { type, message };
-
         }
 
         if (resBody.status === 200) {
-
             resBody.success = true;
 
             resBody.data = this.data || {};
@@ -120,11 +113,9 @@ class Res {
             resBody.meta = {
                 ...this.meta,
                 type: metaData?.type,
-                message: metaData?.message,
+                message: metaData?.message
             };
-
         } else {
-
             if (this.fieldErrors) {
                 resBody.errors = this.populateFieldErrors(this.fieldErrors);
             }
@@ -136,9 +127,8 @@ class Res {
             resBody.meta = {
                 ...this.meta,
                 type: metaData?.type,
-                message: metaData?.message,
+                message: metaData?.message
             };
-
         }
 
         if (process.env.NODE_ENV === 'dev' && this.error) {
@@ -146,6 +136,7 @@ class Res {
         }
 
         this.res.status(resBody.status || 200).send(resBody);
+        return;
     }
 }
 

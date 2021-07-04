@@ -10,56 +10,60 @@ const getDestination = (path: string) => (req: Request, file: any, cb: any) => {
     cb(null, 'data/temp');
 };
 
-const defaultNameHandler = (req: Request, file: Express.Multer.File, cb: any) => {
+const defaultNameHandler = (
+    req: Request,
+    file: Express.Multer.File,
+    cb: any
+) => {
     const ext = mime.extension(file.mimetype);
     const filename = file.originalname
         .split('.')[0]
         .toLowerCase()
         .replace(' ', '');
-    const uniqueName = `${filename}${req.user?._id ? '-' + req.user._id : ''
-        }-${Date.now()}.${ext}`;
+    const uniqueName = `${filename}${
+        req.user?._id ? '-' + req.user._id : ''
+    }-${Date.now()}.${ext}`;
     cb(null, uniqueName);
 };
 
-const getFileFilter = (formats: string[] = []) => (req: Request, file: Express.Multer.File, cb: any) => {
+const getFileFilter =
+    (formats: string[] = []) =>
+    (req: Request, file: Express.Multer.File, cb: any) => {
+        if (!formats.length) {
+            cb(null, true);
+            return;
+        }
 
-    if (!formats.length) {
-        cb(null, true);
-        return;
-    }
+        const extension = mime.extension(file.mimetype);
 
-    let extension = mime.extension(file.mimetype);
+        if (extension && formats.includes(extension)) {
+            cb(null, true);
+            return;
+        }
 
-    if (extension && formats.includes(extension)) {
-        cb(null, true);
-        return;
-    }
+        const err = new Error();
 
-    let err = new Error();
+        err.message = 'InvalidFile';
 
-    err.message = 'InvalidFile';
-    
-    cb(err);
-};
+        cb(err);
+    };
 
 interface UploadOptions {
-    path?: string,
-    mem?: boolean,
-    formats?: string[],
-    maxSize?: number
+    path?: string;
+    mem?: boolean;
+    formats?: string[];
+    maxSize?: number;
 }
 
 class Upload {
-
     private multer: multer.Multer = multer();
-    private path: string = '/data/temp';
-    private mem: boolean = false;
+    private path = '/data/temp';
+    private mem = false;
     private formats: string[] = [];
-    private maxSize: number = 52428800;
+    private maxSize = 52428800;
 
     constructor(options: UploadOptions = {}) {
-
-        let { path, mem, formats, maxSize } = options;
+        const { path, mem, formats, maxSize } = options;
 
         this.path = path || '/data/temp';
 
@@ -67,7 +71,7 @@ class Upload {
 
         this.formats = formats || this.formats;
 
-        let multerOptions: multer.Options = {
+        const multerOptions: multer.Options = {
             limits: {}
         };
 
@@ -87,8 +91,8 @@ class Upload {
         multerOptions.fileFilter = getFileFilter(this.formats);
         this.multer = multer(multerOptions);
     }
-    fields(fields: readonly multer.Field[]) {
-        return this.multer.fields(fields)
+    fields(fields: readonly multer.Field[]): any {
+        return this.multer.fields(fields);
     }
 }
 

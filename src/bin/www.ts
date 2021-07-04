@@ -8,17 +8,23 @@ import dotenv from 'dotenv';
 import cluster from 'cluster';
 import debug from 'debug';
 import http from 'http';
+import os from 'os';
+import { Express } from 'express';
 
 dotenv.config();
 
 debug('app:server');
+
+interface App {
+    default: Express;
+}
 
 /**
  * Normalize a port into a number, string, or false.
  */
 
 function normalizePort(val: string) {
-    var port = parseInt(val, 10);
+    const port = parseInt(val, 10);
 
     if (isNaN(port)) {
         // named pipe
@@ -42,7 +48,7 @@ function onError(error: any) {
         throw error;
     }
 
-    var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+    const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
@@ -63,21 +69,22 @@ function onError(error: any) {
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 
-var start = function () {
+const start = async () => {
     /**
      * Event listener for HTTP server "listening" event.
      */
 
     function onListening() {
-        var addr = server.address();
-        var bind =
+        const addr = server.address();
+        const bind =
             typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr?.port;
         debug('Listening on ' + bind);
     }
 
-    let app = require('../app').default;
+    const System: App = await import('../app');
+    const app = System.default;
 
     app.set('port', port);
 
@@ -85,7 +92,7 @@ var start = function () {
      * Create HTTP server.
      */
 
-    var server = http.createServer(app);
+    const server = http.createServer(app);
 
     /**
      * Listen on provided port, on all network interfaces.
@@ -101,11 +108,11 @@ const clustered = process.env.CLUSTERED == 'true';
 
 if (clustered) {
     if (cluster.isMaster) {
-        var numWorkers = require('os').cpus().length;
+        const numWorkers = os.cpus().length;
 
         console.log('Master cluster setting up ' + numWorkers + ' workers...');
 
-        for (var i = 0; i < numWorkers; i++) {
+        for (let i = 0; i < numWorkers; i++) {
             cluster.fork();
         }
 

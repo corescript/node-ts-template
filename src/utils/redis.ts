@@ -2,12 +2,12 @@ import redis, { RedisClient } from 'redis';
 
 import { promisify } from 'util';
 interface Client extends RedisClient {
-    get: any,
-    set: any,
-    del: any,
-    setUser: any,
-    getUser: any,
-    delUser: any
+    get: any;
+    set: any;
+    del: any;
+    setUser: (id: string, data: unknown) => void;
+    getUser: (id: string) => void;
+    delUser: (id: string) => void;
 }
 
 const client: Client = redis.createClient() as Client;
@@ -21,14 +21,12 @@ client.on('ready', function () {
 });
 
 client.get = promisify(client.get).bind(client);
-
 client.set = promisify(client.set).bind(client);
-
 client.del = promisify(client.del).bind(client);
 
 // Handles user operations
-client.setUser = (id: string, data: object) => client.set(`user_${id}`, JSON.stringify(data));
-client.getUser = (id: string) => client.get(`user_${id}`);
-client.delUser = (id: string) => client.del(`user_${id}`);
+client.setUser = (id, data) => client.set(`user_${id}`, JSON.stringify(data));
+client.getUser = (id) => client.get(`user_${id}`);
+client.delUser = (id) => client.del(`user_${id}`);
 
 export default client;

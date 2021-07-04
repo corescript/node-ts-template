@@ -4,13 +4,13 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import compression from 'compression';
 import helmet from 'helmet';
-import csurf from 'csurf';
 import mongoSanitize from 'express-mongo-sanitize'
 import redisClient from 'utils/redis';
 import errorHandler from 'middleware/errorHandler';
 import * as db from 'db';
 import router from './routes';
 import express from 'express';
+// import csurf from 'csurf';
 
 const app = express();
 

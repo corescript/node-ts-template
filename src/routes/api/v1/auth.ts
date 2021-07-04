@@ -1,7 +1,7 @@
 import express from 'express';
 import * as Auth from 'controllers/Auth';
 
-var router = express.Router();
+const router = express.Router();
 
 /* GET home page. */
 

@@ -3,17 +3,17 @@ import apiRouterV1 from './api/v1';
 import pageRouter from './pages';
 
 
-var router = express.Router();
+const router = express.Router();
 
 
 /* API Routes */
 
-router.all('/api/v1', apiRouterV1);
+router.use('/api/v1', apiRouterV1);
 
 /**
  * Page routes
  */
 
-router.all('/', pageRouter);
+router.use('/', pageRouter);
 
 export default router
